@@ -1,0 +1,52 @@
+name: food_expiry_tracker
+description: Track food expiry dates and get notified before food goes bad.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite: ^2.3.0
+  sqflite_common_ffi_web: ^1.1.1
+  path: ^1.8.3
+  mobile_scanner: ^3.5.6
+  image_picker: ^1.0.4
+  flutter_local_notifications: ^16.3.0
+  intl: ^0.18.1
+  http: ^1.1.0
+  timezone: ^0.9.4
+  cupertino_icons: ^1.0.2
+  shared_preferences: ^2.2.2
+  smooth_page_indicator: ^1.1.0
+  fl_chart: ^0.68.0
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  firebase_database: ^11.1.6
+  google_sign_in: ^6.2.0
+  sign_in_with_apple: ^6.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  macos:
+    generate: true
+    image_path: "assets/icon/app_icon.png"
+  image_path: "assets/icon/app_icon.png"
+
+flutter_native_splash:
+  color: "#1A1A1A"
+  color_dark: "#1A1A1A"
+  fullscreen: true
+
+flutter:
+  uses-material-design: true
