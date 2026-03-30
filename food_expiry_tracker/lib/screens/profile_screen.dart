@@ -51,24 +51,6 @@ class _SignedOutViewState extends State<_SignedOutView> {
     }
   }
 
-  Future<void> _signInWithApple() async {
-    setState(() => _loading = true);
-    try {
-      await AuthService.signInWithApple();
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Apple sign-in failed: $e'),
-            backgroundColor: AppColors.danger,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -271,40 +253,6 @@ class _SignedOutViewState extends State<_SignedOutView> {
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xFF1F1F1F),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      // Apple button
-                      SizedBox(
-                        width: double.infinity,
-                        height: 54,
-                        child: ElevatedButton(
-                          onPressed: _loading ? null : _signInWithApple,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.apple, size: 22,
-                                  color: Colors.white),
-                              SizedBox(width: 10),
-                              Text(
-                                'Continue with Apple',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
                                 ),
                               ),
                             ],
@@ -544,8 +492,6 @@ class _SignedInView extends StatelessWidget {
     switch (providerId) {
       case 'google.com':
         return 'Google';
-      case 'apple.com':
-        return 'Apple';
       case 'password':
         return 'Email & Password';
       default:

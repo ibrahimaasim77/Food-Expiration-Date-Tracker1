@@ -97,23 +97,29 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  /// On sign-in: if cloud has items load them locally, otherwise upload local items.
+  /// On sign-in: merge cloud items into local DB, then upload any local-only items.
   Future<void> _syncFromCloud() async {
     final cloudItems = await CloudSyncService.fetchAll();
+    final localItems = await _db.getAllFoodItems();
+    final localIds = localItems.map((e) => e.id).toSet();
+
     if (cloudItems.isNotEmpty) {
-      // Replace local DB with cloud data
-      final db = _db;
+      // Insert cloud items that don't exist locally
       for (final item in cloudItems) {
-        final existing = await db.getAllFoodItems();
-        final ids = existing.map((e) => e.id).toSet();
-        if (!ids.contains(item.id)) {
-          await db.insertFoodItem(item);
+        if (!localIds.contains(item.id)) {
+          await _db.insertFoodItem(item);
         }
       }
+      // Upload any local items not yet in cloud
+      final cloudIds = cloudItems.map((e) => e.id).toSet();
+      final localOnly = localItems.where((e) => !cloudIds.contains(e.id)).toList();
+      if (localOnly.isNotEmpty) {
+        final allItems = await _db.getAllFoodItems();
+        await CloudSyncService.uploadAll(allItems);
+      }
     } else {
-      // Upload local items to cloud
-      final local = await _db.getAllFoodItems();
-      await CloudSyncService.uploadAll(local);
+      // Cloud is empty — upload everything local
+      await CloudSyncService.uploadAll(localItems);
     }
     _loadItems();
   }

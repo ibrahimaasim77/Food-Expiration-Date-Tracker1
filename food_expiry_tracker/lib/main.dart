@@ -7,6 +7,7 @@ import 'firebase_options.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/welcome_screen.dart';
+import 'services/database_service.dart';
 import 'services/notification_service.dart';
 
 void main() async {
@@ -14,6 +15,10 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   if (!kIsWeb) {
     await NotificationService.initialize();
+    await NotificationService.requestPermission();
+    final db = DatabaseService();
+    final items = await db.getAllFoodItems();
+    await NotificationService.rescheduleAll(items);
   }
   final prefs = await SharedPreferences.getInstance();
   final onboardingDone = prefs.getBool('onboarding_done') ?? false;

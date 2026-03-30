@@ -114,7 +114,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
     _scannerController = MobileScannerController(
       detectionSpeed: DetectionSpeed.noDuplicates,
     );
-    if (widget.startWithScan && !kIsWeb) {
+    if (widget.startWithScan) {
       _isScanning = true;
     }
     if (widget.existingItem != null) {
@@ -165,17 +165,36 @@ class _AddItemScreenState extends State<AddItemScreen> {
     try {
       final url = Uri.parse(
           'https://world.openfoodfacts.org/api/v0/product/$barcode.json');
-      final response = await http.get(url);
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
       final data = jsonDecode(response.body);
       if (data['status'] == 1) {
         final productName =
             (data['product']['product_name'] as String? ?? '').trim();
         if (productName.isNotEmpty) {
           _nameController.text = productName;
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Product found but has no name — enter it manually'),
+              backgroundColor: AppColors.warning,
+            ));
+          }
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Barcode not recognised — enter name manually'),
+            backgroundColor: AppColors.warning,
+          ));
         }
       }
     } catch (_) {
-      // silently fail — user can type manually
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Lookup failed — check your connection'),
+          backgroundColor: AppColors.danger,
+        ));
+      }
     } finally {
       if (mounted) {
         setState(() {

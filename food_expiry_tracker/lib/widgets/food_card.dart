@@ -68,6 +68,16 @@ class FoodCard extends StatelessWidget {
                       width: 48,
                       height: 48,
                       fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: statusColor.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(_getStatusIcon(),
+                            color: statusColor, size: 26),
+                      ),
                     )
                   : Container(
                       width: 48,

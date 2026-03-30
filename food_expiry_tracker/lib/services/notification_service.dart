@@ -82,4 +82,24 @@ class NotificationService {
     await _notifications.cancel(itemId * 10);
     await _notifications.cancel(itemId * 10 + 1);
   }
+
+  /// Request notification permission on Android 13+.
+  /// iOS permission is requested automatically via DarwinInitializationSettings.
+  static Future<void> requestPermission() async {
+    if (kIsWeb) return;
+    final androidImpl = _notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    await androidImpl?.requestNotificationsPermission();
+  }
+
+  /// Reschedule notifications for all upcoming items (call on app launch).
+  static Future<void> rescheduleAll(List<FoodItem> items) async {
+    if (kIsWeb) return;
+    for (final item in items) {
+      if (item.id != null) {
+        await scheduleExpiryNotifications(item);
+      }
+    }
+  }
 }
