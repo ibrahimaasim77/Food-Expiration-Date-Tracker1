@@ -1,18 +1,10 @@
 # Food Expiry Tracker
 
-A cross-platform Flutter app for tracking food expiry dates, reducing waste, and staying on top of what's in your fridge — with barcode scanning, push notifications, a calendar view, analytics, and Firebase cloud sync.
+A cross-platform Flutter app that helps you track food expiry dates, reduce waste, and stay on top of what's in your fridge. Built with a full production stack — Firebase cloud sync, barcode scanning via the Open Food Facts API, push notifications, analytics, and a polished dark-mode UI.
 
 > Built with Flutter · Firebase · SQLite · Open Food Facts API
 
-🔗 **[Live Demo](https://food-expiry-tracker-rosy.vercel.app)**
-
----
-
-## Screenshots
-
-| Home | Calendar | Stats | Profile |
-|------|----------|-------|---------|
-| Grouped list with expiry status | Monthly calendar with colour-coded days | Pie charts & summary cards | Google sign-in + account info |
+🔗 **[Live Demo](https://food-expiry-tracker-ibrahimaasim77s-projects.vercel.app)**
 
 ---
 
@@ -21,7 +13,7 @@ A cross-platform Flutter app for tracking food expiry dates, reducing waste, and
 ### Core
 - Add food items with name, category, expiry date, and photo
 - **Smart category auto-detection** — type "chicken" and the category fills in automatically
-- **Barcode scanner** — scan any product and the name is fetched from the Open Food Facts API
+- **Barcode scanner** — scan any product and fetch its name from the Open Food Facts API (iOS, Android, Chrome)
 - Swipe to delete with a 4-second undo snackbar
 - Search, filter by category, and sort by expiry date, name, or category
 - Animated list with fade/slide-in item transitions
@@ -36,12 +28,16 @@ A cross-platform Flutter app for tracking food expiry dates, reducing waste, and
 
 ### Cloud Sync
 - Sign in with Google to sync your food list across devices
-- Merge logic handles both directions — local-only and cloud-only items are reconciled on sign-in
+- Two-way merge on sign-in — local-only and cloud-only items are reconciled automatically
+
+### Demo Mode
+- On first launch, choose between **Try Demo** or **Start for Real**
+- Demo mode pre-loads 12 realistic sample items across all categories (expired, expiring soon, and fresh) so the app looks alive instantly — no setup required
+- Perfect for trying out the UI before committing to your own data
 
 ### First-run Experience
 - 3-slide onboarding walkthrough
-- **Demo mode** — loads 12 realistic sample items across all categories so the app looks alive instantly
-- Or start fresh and add your own items
+- Demo vs real-usage choice screen after onboarding
 
 ---
 
@@ -59,6 +55,7 @@ A cross-platform Flutter app for tracking food expiry dates, reducing waste, and
 | Charts | `fl_chart` |
 | Camera / image picker | `image_picker` |
 | Product lookup | Open Food Facts REST API |
+| Deployment | Vercel (Flutter Web) |
 
 ---
 
