@@ -3,9 +3,7 @@ import 'package:food_expiry_tracker/main.dart';
 
 void main() {
   testWidgets('FoodExpiryApp builds without errors', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const FoodExpiryApp(showOnboarding: true, showWelcome: false),
-    );
+    await tester.pumpWidget(const FoodExpiryApp());
     expect(find.byType(FoodExpiryApp), findsOneWidget);
   });
 }
