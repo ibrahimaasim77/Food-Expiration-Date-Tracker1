@@ -15,8 +15,8 @@ android/local.properties
 android/key.properties
 
 # macOS
-macos/Pods/
-macos/.symlinks/
+macos/
+
 
 # IDE
 .idea/
