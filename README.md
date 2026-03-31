@@ -1,6 +1,8 @@
-# Food Expiration Date Tracker
+# Food Expiry Tracker
 
-A cross-platform Flutter app that helps you track food expiry dates, cut down on waste, and stay on top of what's in your fridge — with push notifications, a calendar view, stats, and optional Firebase cloud sync.
+A cross-platform Flutter app for tracking food expiry dates, reducing waste, and staying on top of what's in your fridge — with barcode scanning, push notifications, a calendar view, analytics, and Firebase cloud sync.
+
+> Built with Flutter · Firebase · SQLite · Open Food Facts API
 
 ---
 
@@ -8,26 +10,36 @@ A cross-platform Flutter app that helps you track food expiry dates, cut down on
 
 | Home | Calendar | Stats | Profile |
 |------|----------|-------|---------|
-| Grouped food list with expiry status | Monthly calendar with expiry dots | Pie charts & summary cards | Google / Apple sign-in + account info |
+| Grouped list with expiry status | Monthly calendar with colour-coded days | Pie charts & summary cards | Google sign-in + account info |
 
 ---
 
 ## Features
 
-- **Track food items** with name, category, expiry date, and optional photo
-- **Smart category detection** — type "chicken" and the category auto-fills
-- **Expiry status banner** — shows expired / expiring today / expiring this week counts at a glance
-- **Swipe to delete** with a 4-second undo snackbar
-- **Search, filter by category, and sort** (by expiry date, name, or category)
-- **Animated list** with fade/slide-in transitions
-- **Barcode scanner** — scans barcodes and looks up the product name via Open Food Facts API
-- **Camera photo** — attach a photo to any item
-- **Push notifications** — reminds you 3 days and 1 day before expiry (mobile only)
-- **Expiry calendar** — tap any date to see what's expiring
-- **Statistics tab** — interactive pie charts for category breakdown and freshness status
-- **Firebase cloud sync** — sign in with Google or Apple to back up and sync your data across devices
-- **Web support** — fully functional in the browser (storage via localStorage)
-- **Dark blue theme** throughout
+### Core
+- Add food items with name, category, expiry date, and photo
+- **Smart category auto-detection** — type "chicken" and the category fills in automatically
+- **Barcode scanner** — scan any product and the name is fetched from the Open Food Facts API
+- Swipe to delete with a 4-second undo snackbar
+- Search, filter by category, and sort by expiry date, name, or category
+- Animated list with fade/slide-in item transitions
+
+### Notifications
+- Push notifications 3 days and 1 day before expiry (iOS + Android)
+- Notifications rescheduled on every app launch — never miss an alert after a reinstall
+
+### Calendar & Stats
+- Monthly expiry calendar — colour-coded dates, tap to see items expiring that day
+- Stats tab with interactive pie charts for category breakdown and freshness status
+
+### Cloud Sync
+- Sign in with Google to sync your food list across devices
+- Merge logic handles both directions — local-only and cloud-only items are reconciled on sign-in
+
+### First-run Experience
+- 3-slide onboarding walkthrough
+- **Demo mode** — loads 12 realistic sample items across all categories so the app looks alive instantly
+- Or start fresh and add your own items
 
 ---
 
@@ -35,13 +47,13 @@ A cross-platform Flutter app that helps you track food expiry dates, cut down on
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Flutter (Dart) |
-| Local storage (mobile) | SQLite via `sqflite` |
-| Local storage (web) | `shared_preferences` (localStorage) |
+| Framework | Flutter 3 (Dart) |
+| Local storage — mobile | SQLite via `sqflite` |
+| Local storage — web | `shared_preferences` (localStorage) |
 | Cloud sync | Firebase Realtime Database |
-| Auth | Firebase Auth (Google + Apple) |
+| Auth | Firebase Auth + Google Sign-In |
 | Notifications | `flutter_local_notifications` |
-| Barcode scanning | `mobile_scanner` |
+| Barcode scanning | `mobile_scanner` (iOS, Android, Chrome) |
 | Charts | `fl_chart` |
 | Camera / image picker | `image_picker` |
 | Product lookup | Open Food Facts REST API |
@@ -52,28 +64,30 @@ A cross-platform Flutter app that helps you track food expiry dates, cut down on
 
 ```
 lib/
-├── main.dart                    # App entry, routing (onboarding / welcome / home)
-├── app_colors.dart              # Global dark-blue color palette
+├── main.dart                     # Entry point, routing (onboarding / demo choice / home)
+├── app_colors.dart               # Centralised dark theme colour palette
 ├── models/
-│   └── food_item.dart           # FoodItem data model + computed expiry helpers
+│   └── food_item.dart            # FoodItem model + computed expiry helpers
 ├── screens/
-│   ├── home_screen.dart         # Main tab: grouped list, search, filter, sort
-│   ├── add_item_screen.dart     # Add / edit item: barcode scan, camera, manual entry
-│   ├── item_detail_screen.dart  # Full detail view with status card and actions
-│   ├── calendar_screen.dart     # Monthly calendar + upcoming expiry list
-│   ├── stats_screen.dart        # Pie charts + summary cards
-│   ├── profile_screen.dart      # Auth (signed-out: login, signed-in: account info)
-│   ├── onboarding_screen.dart   # 3-slide first-launch walkthrough
-│   └── welcome_screen.dart      # Post-onboarding prompt to add first item
+│   ├── home_screen.dart          # Main tab: grouped list, search, filter, sort
+│   ├── add_item_screen.dart      # Add / edit: barcode scan, camera, manual entry
+│   ├── item_detail_screen.dart   # Full detail view with status card and actions
+│   ├── calendar_screen.dart      # Monthly calendar + upcoming expiry list
+│   ├── stats_screen.dart         # Pie charts + summary cards
+│   ├── profile_screen.dart       # Auth: sign-in / account info
+│   ├── onboarding_screen.dart    # 3-slide first-launch walkthrough
+│   ├── demo_choice_screen.dart   # Demo vs real-usage choice after onboarding
+│   └── welcome_screen.dart       # First-item prompt for real-usage path
 ├── services/
-│   ├── database_service.dart    # SQLite (mobile) / SharedPreferences (web) CRUD
-│   ├── cloud_sync_service.dart  # Firebase Realtime Database read/write
-│   ├── auth_service.dart        # Firebase Auth (Google, Apple sign-in)
-│   └── notification_service.dart# Local push notification scheduling
+│   ├── database_service.dart     # SQLite (mobile) / SharedPreferences (web) CRUD
+│   ├── cloud_sync_service.dart   # Firebase Realtime Database read/write/merge
+│   ├── auth_service.dart         # Firebase Auth wrapper (Google Sign-In)
+│   ├── notification_service.dart # Local notification scheduling + rescheduling
+│   └── demo_service.dart         # Seeds database with realistic sample data
 ├── widgets/
-│   └── food_card.dart           # Swipeable food item card widget
+│   └── food_card.dart            # Swipeable food item card
 └── utils/
-    └── transitions.dart         # Slide-up + fade page route transition
+    └── transitions.dart          # Slide-up + fade page route transition
 ```
 
 ---
@@ -83,8 +97,7 @@ lib/
 ### Prerequisites
 
 - Flutter SDK `>=3.0.0`
-- A Firebase project with **Authentication** and **Realtime Database** enabled
-- For iOS/macOS: Xcode and valid signing certificates
+- A Firebase project with **Authentication** (Google) and **Realtime Database** enabled
 
 ### Setup
 
@@ -100,40 +113,18 @@ lib/
    ```
 
 3. **Configure Firebase**
-   - Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
-   - Enable **Google Authentication** and **Apple Authentication**
-   - Enable **Realtime Database** (start in test mode or set rules as needed)
-   - Run `flutterfire configure` and replace `lib/firebase_options.dart` with your generated config
+   - Create a project at [console.firebase.google.com](https://console.firebase.google.com)
+   - Enable **Google Authentication** and **Realtime Database**
+   - Run `flutterfire configure` to generate `lib/firebase_options.dart`
 
 4. **Run the app**
    ```bash
-   # Mobile
-   flutter run
-
-   # Web
+   # Web (Chrome)
    flutter run -d chrome
+
+   # iOS / Android
+   flutter run
    ```
-
----
-
-## Data Model
-
-```dart
-FoodItem {
-  int?   id                    // local DB id
-  String name                  // e.g. "Whole Milk"
-  DateTime expiryDate          // expiry date
-  String category              // Dairy, Meat, Produce, etc.
-  int    safeDaysAfterExpiry   // days still considered safe after expiry date
-  String? imagePath            // local file path (mobile only)
-}
-```
-
-**Computed helpers:**
-- `daysUntilExpiry` — negative if expired
-- `isExpired` — true if past expiry date
-- `isStillSafe` — true if expired but within the `safeDaysAfterExpiry` window
-- `statusMessage` — human-readable status string
 
 ---
 
@@ -142,60 +133,68 @@ FoodItem {
 ```
 First launch
   └── OnboardingScreen (3 slides)
-        └── WelcomeScreen (add first item prompt)
-              ├── Add Item → HomeScreen
-              └── Not today → HomeScreen
+        └── DemoChoiceScreen
+              ├── Try Demo  → seeds 12 sample items → HomeScreen
+              └── Start for Real → WelcomeScreen → HomeScreen
 
 Returning user
-  └── HomeScreen (4 bottom tabs: Home · Calendar · Stats · Profile)
+  └── HomeScreen
+        ├── Home tab    — grouped list, search, filter, sort
+        ├── Calendar tab — monthly expiry calendar
+        ├── Stats tab   — charts and summary
+        └── Profile tab — Google sign-in / account info
 ```
+
+---
+
+## Data Model
+
+```dart
+FoodItem {
+  int?     id                   // local DB primary key
+  String   name                 // e.g. "Whole Milk"
+  DateTime expiryDate           // label expiry date
+  String   category             // Dairy | Meat | Produce | Seafood | Bakery | ...
+  int      safeDaysAfterExpiry  // days still considered usable after expiry
+  String?  imagePath            // local file path (mobile only)
+}
+```
+
+Computed helpers: `daysUntilExpiry`, `isExpired`, `isStillSafe`, `statusMessage`
 
 ---
 
 ## Cloud Sync
 
-When signed in, every insert / update / delete is mirrored to Firebase Realtime Database at:
-
-```
-/users/{uid}/food_items/{itemId}/
-  name
-  expiryDate
-  category
-  safeDaysAfterExpiry
-```
-
-On sign-in, if the cloud has items they are merged into the local store. If the cloud is empty, local items are uploaded.
+All writes are mirrored to Firebase Realtime Database at `/users/{uid}/food_items/{id}`. On sign-in, a two-way merge runs — cloud-only items are inserted locally and local-only items are uploaded to the cloud.
 
 ---
 
-## Notifications
+## Notification Schedule
 
-Push notifications are scheduled on mobile (iOS + Android) whenever an item is saved:
-
-| Timing | Message |
-|--------|---------|
+| Trigger | Message |
+|---------|---------|
 | 3 days before expiry | "Expiring Soon — {name} expires in 3 days!" |
 | 1 day before expiry | "Expires Tomorrow — {name} expires tomorrow!" |
 
-Notifications are automatically cancelled when an item is deleted or updated.
+Notifications are rescheduled on every app launch and cancelled automatically on item delete or update.
 
 ---
 
-## Safe-Days-After-Expiry Defaults
+## Safe Days After Expiry
 
-| Category | Safe days after expiry |
-|----------|----------------------|
-| Meat / Seafood | 1 day |
-| Dairy | 3 days |
-| Produce / Bakery | 5 days |
-| Beverages | 7 days |
-| Snacks | 14 days |
-| Frozen | 30 days |
-| Canned Goods | 365 days |
-| Other | 3 days |
+| Category | Safe days |
+|----------|-----------|
+| Meat / Seafood | 1 |
+| Dairy | 3 |
+| Produce / Bakery | 5 |
+| Beverages | 7 |
+| Snacks | 14 |
+| Frozen | 30 |
+| Canned Goods | 365 |
 
 ---
 
 ## License
 
-MIT License — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE) for details.
