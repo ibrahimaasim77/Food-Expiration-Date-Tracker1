@@ -4,6 +4,8 @@ A cross-platform Flutter app for tracking food expiry dates, reducing waste, and
 
 > Built with Flutter · Firebase · SQLite · Open Food Facts API
 
+🔗 **[Live Demo](https://food-expiry-tracker-rosy.vercel.app)**
+
 ---
 
 ## Screenshots
