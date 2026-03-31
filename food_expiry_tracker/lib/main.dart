@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_colors.dart';
 import 'firebase_options.dart';
+import 'screens/demo_choice_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
-import 'screens/welcome_screen.dart';
 import 'services/database_service.dart';
 import 'services/notification_service.dart';
 
@@ -68,7 +68,7 @@ class FoodExpiryApp extends StatelessWidget {
       home: showOnboarding
           ? const OnboardingScreen()
           : showWelcome
-              ? const WelcomeScreen()
+              ? const DemoChoiceScreen()
               : const HomeScreen(),
     );
   }
