@@ -26,3 +26,5 @@ macos/
 # Misc
 *.log
 .metadata
+*\ 2
+*\ 2.*
